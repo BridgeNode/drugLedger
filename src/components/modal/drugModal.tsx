@@ -11,7 +11,8 @@ import Issue from '../issue'
 import Log from '../log'
 import { FcCollapse, FcExpand } from "react-icons/fc";
 import OpenIssue from '../openIssue'
-
+import AddLogs from '../addLogs'
+import { FaPlus } from "react-icons/fa6";
 
 const DrugModal = ({ close, closeFn }: { close: boolean, closeFn: Function }) => {
    const account = useAccount()
@@ -20,6 +21,7 @@ const DrugModal = ({ close, closeFn }: { close: boolean, closeFn: Function }) =>
    const [issuesCollapsed, setIssuesCollapsed] = useState<boolean>(false)
    const [logsCollapsed, setLogsCollapsed] = useState<boolean>(false)
    const [openIssue, setOpenIssue] = useState<boolean>(false)
+   const [addLog, setAddLog] = useState<boolean>(false)
    const [drugData, setDrugData] = useState({
       drugName: "",
       genericName: "",
@@ -71,6 +73,8 @@ const DrugModal = ({ close, closeFn }: { close: boolean, closeFn: Function }) =>
          })
          const data = await result.json()
          setDrugData({ ...data.data, manufacturer: drug.manufacturer })
+         const logs = await contract.events.Log()
+         console.log(logs)
          toast.success('Drug retrieved successfully')
          setLoading(false)
       } catch (error) {
@@ -151,18 +155,24 @@ const DrugModal = ({ close, closeFn }: { close: boolean, closeFn: Function }) =>
 
 
                {logs.length > 0 && <div className={`bg-red-00 h-fit ${logsCollapsed ? '' : 'h-[2rem]'} overflow-hidden`} >
-                  <button className='w-full p-2 h-[2rem] flex justify-between items-center' onClick={() => {
-                     setCollapsed(false);
-                     setIssuesCollapsed(false);
-                     setLogsCollapsed(!logsCollapsed)
-                  }}>Logs
+                  <button className='w-full p-2 h-[2rem] flex justify-between items-center' onClick={(e) => {
+                     // if (e.currentTarget === e.target) {}
+                        setCollapsed(false);
+                        setIssuesCollapsed(false);
+                        setLogsCollapsed(!logsCollapsed)
+                  }}>
+                     <div className='flex'>logs
+                        {/* <button className='mx-2 bg-gray-100 px-2 rounded-sm flex justify-center items-center text-sm' onClick={() => setAddLog(!addLog)}><FaPlus /></button> */}
+                     </div>
                      {logsCollapsed ? <FcCollapse /> : <FcExpand />}
                   </button>
+                  {/* Todo: remove hardcoded value of drugId */}
+                  {addLog && <AddLogs drugId={0}/>}
                   <div>
                      {logs.map((log, key) =>
                         <Log {...log} key={key} />
                      )}
-
+                     <button className='w-fit p-1 px-4 m-2 mx-0 text-white bg-blue-500 rounded-md ' onClick={()=> setAddLog(true)}>Add Log</button>
                   </div>
                </div>}
                {issues.issues.length > 0 && <div className={`bg-red-00 h-fit ${issuesCollapsed ? '' : 'h-[2rem]'} overflow-hidden`} >

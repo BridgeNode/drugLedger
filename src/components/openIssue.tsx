@@ -38,7 +38,7 @@ const OpenIssue = ({drugId}: {drugId: number}) => {
             <p className='py-1 px-1 text-[13px] text-gray-900'>Description</p>
             <input type="text" name="description" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='Enter issue description' onChange={(e) => handleChange(e)} />
          </div>
-         <button className={`mt-4 w-fit bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex justify-center items-center ${loading ? 'bg-blue-400/90 hover:bg-blue-400/90' : ''}`} onClick={handleOpenIssue} disabled={loading}>
+         <button className={`mt-4 w-fit bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex justify-center items-center text-sm ${loading ? 'bg-blue-400/90 hover:bg-blue-400/90' : ''}`} onClick={handleOpenIssue} disabled={loading}>
             Open Issue
             {loading && <Loader />}
          </button>
