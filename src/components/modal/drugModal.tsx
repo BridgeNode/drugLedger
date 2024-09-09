@@ -7,11 +7,19 @@ import toast from "react-hot-toast"
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { contract } from '@/backend/init'
 import Loader from '../loader'
+import Issue from '../issue'
+import Log from '../log'
+import { FcCollapse, FcExpand } from "react-icons/fc";
+import OpenIssue from '../openIssue'
+
 
 const DrugModal = ({ close, closeFn }: { close: boolean, closeFn: Function }) => {
    const account = useAccount()
    const [loading, setLoading] = useState<boolean>(false)
-   const [collapsed, setCollapsed] = useState<boolean>(false)
+   const [collapsed, setCollapsed] = useState<boolean>(true)
+   const [issuesCollapsed, setIssuesCollapsed] = useState<boolean>(false)
+   const [logsCollapsed, setLogsCollapsed] = useState<boolean>(false)
+   const [openIssue, setOpenIssue] = useState<boolean>(false)
    const [drugData, setDrugData] = useState({
       drugName: "",
       genericName: "",
@@ -24,6 +32,22 @@ const DrugModal = ({ close, closeFn }: { close: boolean, closeFn: Function }) =>
       certificateNumber: "",
       uniqueIdentifier: "",
       manufacturer: ""
+   })
+   const [logs, setLogs] = useState([{
+      drugId: "2343",
+      entity: "Noble",
+      action: "Delivered",
+      from: "ox33"
+   }, {
+      drugId: "2343",
+      entity: "Noble",
+      action: "Delivered",
+      from: "ox33"
+   }
+   ])
+   const [issues, setIssues] = useState({
+      issues: [],
+      drugId: '',
    })
    const [fields, setFields] = useState({
       drugId: ''
@@ -40,11 +64,13 @@ const DrugModal = ({ close, closeFn }: { close: boolean, closeFn: Function }) =>
             toast.error('No drug found with this ID')
             return
          }
+         console.log(drug)
+         setIssues({issues: drug.issues, drugId: fields.drugId})
          const result = await fetch(`/api/files?cid=${drug.cid}`, {
             method: "GET"
          })
          const data = await result.json()
-         setDrugData({...data.data, manufacturer: drug.manufacturer})
+         setDrugData({ ...data.data, manufacturer: drug.manufacturer })
          toast.success('Drug retrieved successfully')
          setLoading(false)
       } catch (error) {
@@ -55,15 +81,23 @@ const DrugModal = ({ close, closeFn }: { close: boolean, closeFn: Function }) =>
    }
    return (
       <Closure close={close} closeFn={closeFn}>
-         <div className='w-[85vw] md:w-[80vw] max-h-[90vh] lg:w-[40vw] xl:[w-50vw] h-fit bg-white rounded-md p-5 shadow-sm'>
+         <div className='w-[85vw] md:w-[80vw] max-h-[80vh] h-fit lg:w-[40vw] xl:[w-50vw] bg-white rounded-md p-5 shadow-sm flex flex-col overflow-hidden'>
             <Header title='Retrieve' />
-            <div className='overflow-auto'>
+            <div className=''>
                <div className='flex flex-col mb-2'>
                   <p className='py-1 px-1 text-[13px] text-gray-900'>Drug Id</p>
                   <input type="text" name="drugId" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='Enter Drug Id' onChange={(e) => handleChange(e)} />
                </div>
-               {drugData.drugName !== "" && <div className={``} onClick={()=> setCollapsed(!collapsed)}>
-                  <div className='w-full' onClick={() => setCollapsed(!collapsed)}>Details</div>
+               {drugData.drugName !== "" && <div className={`h-fit ${collapsed ? '' : 'h-[2rem]'} overflow-hidden px-2`}>
+                  <button className='w-full p-2 px-0 h-[2rem] flex justify-between items-center' onClick={() => {
+                     setCollapsed(!collapsed);
+                     setIssuesCollapsed(false);
+                     setLogsCollapsed(false)
+                  }}>Details
+                     {collapsed ? <FcCollapse /> : <FcExpand />}
+                  </button>
+                  <div className="h-[50vh] flex-1 overflow-auto bg-gray-00">
+
                   <div className='flex flex-col mb-2'>
                      <p className='py-1 px-1 text-[13px] text-gray-900'>Drug Name</p>
                      <p className='py-2 px-3 text-[14px] bg-gray-100 rounded'>{drugData.drugName}</p>
@@ -112,9 +146,47 @@ const DrugModal = ({ close, closeFn }: { close: boolean, closeFn: Function }) =>
                      <p className='py-1 px-1 text-[13px] text-gray-900'>Manufacturer</p>
                      <p className='py-2 px-3 text-[14px] bg-gray-100 rounded'>{drugData.manufacturer}</p>
                   </div>
+                  </div>
+               </div>}
+
+
+               {logs.length > 0 && <div className={`bg-red-00 h-fit ${logsCollapsed ? '' : 'h-[2rem]'} overflow-hidden`} >
+                  <button className='w-full p-2 h-[2rem] flex justify-between items-center' onClick={() => {
+                     setCollapsed(false);
+                     setIssuesCollapsed(false);
+                     setLogsCollapsed(!logsCollapsed)
+                  }}>Logs
+                     {logsCollapsed ? <FcCollapse /> : <FcExpand />}
+                  </button>
+                  <div>
+                     {logs.map((log, key) =>
+                        <Log {...log} key={key} />
+                     )}
+
+                  </div>
+               </div>}
+               {issues.issues.length > 0 && <div className={`bg-red-00 h-fit ${issuesCollapsed ? '' : 'h-[2rem]'} overflow-hidden`} >
+                  <button className='w-full p-2 h-[2rem] flex justify-between items-center' onClick={() => {
+                     setCollapsed(false);
+                     setLogsCollapsed(false)
+                     setIssuesCollapsed(!issuesCollapsed);
+                  }}>Issues
+                     {issuesCollapsed ? <FcCollapse /> : <FcExpand />}
+                  </button>
+                  {/* Todo: remove hardcoded value of drugId */}
+                  {openIssue && 
+                  <OpenIssue drugId={0}/>
+                  }
+
+                  <div className='px-2'>
+                     {issues.issues.map((issue, key) =>
+                        <Issue {...issue as any} drugId={issues.drugId} issueId={key} key={key} />
+                     )}
+                     <button className='w-fit p-1 px-4 m-2 mx-0 text-white bg-blue-500 rounded-md ' onClick={()=> setOpenIssue(true)}>Add Issue</button>
+                  </div>
                </div>}
             </div>
-            <button className={`mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex justify-center items-center ${loading ? 'bg-blue-400/90 hover:bg-blue-400/90': ''}`} onClick={handleRetrieve} disabled={loading}>
+            <button className={`mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex justify-center items-center ${loading ? 'bg-blue-400/90 hover:bg-blue-400/90' : ''}`} onClick={handleRetrieve} disabled={loading}>
                Retrieve Drug
                {loading && <Loader />}
             </button>
