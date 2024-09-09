@@ -4,17 +4,25 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 import Modal from "@/components/modal/modal";
 import { useState } from "react";
+import Navbar from "@/components/navbar";
+import { contract } from "@/backend/init";
+import toast from "react-hot-toast";
+
+
 export default function Home() {
    const [close, setClose] = useState<boolean>(false)
    const account = useAccount()
-  return (
-    <main className="flex min-h-screen flex-col items-center">
-     <div className="w-full p-3 bg-gray-200 flex justify-between items-center px-10">
-      <p className="font-semibold font-serif text-xl">DrugLedger</p>
-     <ConnectButton />
-     </div>
-     <button onClick={() => setClose(!close)}>Open</button>
-     <Modal close={close} closeFn={setClose} />
-    </main>
-  );
+   const getManufacturer = async () => {
+      const result = await contract.methods.getManufacturer("0xf0830060f836B8d54bF02049E5905F619487989e").call()
+      console.log(result)
+   }
+
+   return (
+      <main className="flex min-h-screen flex-col items-center">
+         <Navbar />
+         <button onClick={() => setClose(!close)}>Open</button>
+         <button onClick={() => getManufacturer()}>Get Manu</button>
+         <Modal close={close} closeFn={setClose} />
+      </main>
+   );
 }
