@@ -15,6 +15,14 @@
     --background-end-rgb: 0, 0, 0;
   }
 } */
+.scroll-hidden {
+   overflow: auto;
+   scrollbar-width: none; /* Firefox */
+ }
+ 
+ .scroll-hidden::-webkit-scrollbar {
+   display: none; /* Safari and Chrome */
+ }
 
 body {
   color: rgb(var(--foreground-rgb));

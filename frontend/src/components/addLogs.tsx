@@ -39,7 +39,7 @@ const AddLogs = ({drugId}: {drugId: number | string}) => {
             <input type="text" name="action" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='Enter action' onChange={(e) => handleChange(e)} />
          </div>
          <div className='w-full flex justify-end'>
-         <button className={`mt-4 right-0 w-fit bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex justify-center items-center text-sm ${loading ? 'bg-blue-400/90 hover:bg-blue-400/90' : ''}`} onClick={handleOpenIssue} disabled={loading}>
+         <button className={`mt-4 right-0 w-fit text-white font-bold py-2 px-4 rounded flex justify-center items-center text-sm ${loading ? 'bg-blue-400/90 hover:bg-blue-400/90' : 'bg-blue-500 hover:bg-blue-700'}`} onClick={handleOpenIssue} disabled={loading}>
             Confirm
             {loading && <Loader />}
          </button>

@@ -40,7 +40,7 @@ const OpenIssue = ({ drugId }: { drugId: number | string }) => {
          </div>
          <div className='w-full flex justify-end'>
 
-            <button className={`mt-4 w-fit bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex justify-center items-center text-sm ${loading ? 'bg-blue-400/90 hover:bg-blue-400/90' : ''}`} onClick={handleOpenIssue} disabled={loading}>
+            <button className={`mt-4 w-fit text-white font-bold py-2 px-4 rounded flex justify-center items-center text-sm ${loading ? 'bg-blue-400/90 hover:bg-blue-400/90' : 'bg-blue-500 hover:bg-blue-700'}`} onClick={handleOpenIssue} disabled={loading}>
                Open Issue
                {loading && <Loader />}
             </button>

@@ -59,7 +59,7 @@ const Issue = ({ drugId, issueId, name, description, date, owner, resolved, reas
                   <p className='py-1 px-1 text-[13px] text-gray-900'>Reason</p>
                   <input type="text" name="reason" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='Enter reason' onChange={(e) => handleChange(e)} />
                </div>
-               <button className={`mt-4 w-fit bg-red-400 hover:bg-red-500 text-white font-bold py-2 px-4 rounded flex justify-center items-center text-sm ${loading ? 'bg-red-300/90 hover:bg-red-300/90' : ''}`} onClick={handleCloseIssue} disabled={loading}>
+               <button className={`mt-4 w-fit text-white font-bold py-2 px-4 rounded flex justify-center items-center text-sm ${loading ? 'bg-red-300/90 hover:bg-red-300/90' : 'bg-red-400 hover:bg-red-500 '}`} onClick={handleCloseIssue} disabled={loading}>
                   Close Issue
                   {loading && <Loader />}
                </button>

@@ -36,11 +36,11 @@ const DrugModal = ({ close, closeFn, drugId }: { close: boolean, closeFn: Functi
       uniqueIdentifier: "",
       manufacturer: ""
    })
-   const [logs, setLogs] = useState<{ drugId: number, entity: string, action: string, from: string }[]>([])
-   const [issues, setIssues] = useState({
-      issues: [],
-      drugId: '',
-   })
+   const [logs, setLogs] = useState<{ drugId: number, entity: string, action: string, from: string }[] | undefined>()
+   const [issues, setIssues] = useState<{
+      issues: Array<any>,
+      drugId: string,
+   } | undefined>()
    const [fields, setFields] = useState({
       drugId: ''
    })
@@ -48,6 +48,7 @@ const DrugModal = ({ close, closeFn, drugId }: { close: boolean, closeFn: Functi
       setFields({ ...fields, [e.target.name]: e.target.value })
    }
    const handleRetrieve = useCallback(async (_id?: number) => {
+
       const _drugId = _id ? _id : fields.drugId
       setLoading(true)
       try {
@@ -60,15 +61,17 @@ const DrugModal = ({ close, closeFn, drugId }: { close: boolean, closeFn: Functi
          const returnLogs = await contract.getPastEvents('Log', {
             fromBlock: 0,
             toBlock: 'latest'
-         });
+         }).then((result: any) => result).catch(() => undefined)
          const result = await fetch(`/api/files?cid=${drug.cid}`, {
             method: "GET"
          })
          const data = await result.json()
          const newLog = []
-         for (let index = 0; index < returnLogs.length; index++) {
-            const element = returnLogs[index];
-            newLog.push(element.returnValues)
+         if (typeof returnLogs !== undefined) {
+            for (let index = 0; index < returnLogs?.length; index++) {
+               const element = returnLogs[index];
+               newLog.push(element.returnValues)
+            }
          }
          setDrugData({ ...data.data, manufacturer: drug.manufacturer })
          setIssues({ issues: drug.issues, drugId: _drugId as string })
@@ -100,7 +103,7 @@ const DrugModal = ({ close, closeFn, drugId }: { close: boolean, closeFn: Functi
                <button className='w-full p-2 px-0 h-[2rem] flex justify-between items-center' onClick={() => setCollapsed(!collapsed)}>Details
                   {collapsed ? <FcExpand /> : <FcCollapse />}
                </button>
-               <div className={`h-[50vh] flex-1 overflow-auto bg-gray-00 ${collapsed ? 'hidden' : 'flex flex-col'}`}>
+               <div className={`h-[50vh] flex-1 overflow-auto bg-gray-00 ${collapsed ? 'hidden' : 'flex flex-col'} scroll-hidden`}>
 
                   <div className='flex flex-col mb-2'>
                      <p className='py-1 px-1 text-[13px] text-gray-900'>Drug Name</p>
@@ -154,7 +157,7 @@ const DrugModal = ({ close, closeFn, drugId }: { close: boolean, closeFn: Functi
             </div>}
 
 
-            {logs.length > 0 && <div className={`bg-red-00 h-fit overflow-hidden`} >
+            {logs && <div className={`bg-red-00 h-fit overflow-hidden`} >
                <button className='w-full p-2 h-[2rem] flex justify-between items-center' onClick={() => setLogsCollapsed(!logsCollapsed)}>
                   <div className='flex'>Logs</div>
                   {logsCollapsed ? <FcExpand /> : <FcCollapse />}
@@ -171,7 +174,7 @@ const DrugModal = ({ close, closeFn, drugId }: { close: boolean, closeFn: Functi
 
                </div>
             </div>}
-            {issues.issues.length > 0 && <div className={`bg-red-00 h-fit overflow-hidden`} >
+            {issues && <div className={`bg-red-00 h-fit overflow-hidden`} >
                <button className='w-full p-2 h-[2rem] flex justify-between items-center' onClick={() => setIssuesCollapsed(!issuesCollapsed)}>Issues
                   {issuesCollapsed ? <FcExpand /> : <FcCollapse />}
                </button>
@@ -199,13 +202,13 @@ const DrugModal = ({ close, closeFn, drugId }: { close: boolean, closeFn: Functi
                </div>
             </div>}
             {!drugId && (
-               <button className={`mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex justify-center items-center ${loading ? 'bg-blue-400/90 hover:bg-blue-400/90' : ''}`} onClick={() => handleRetrieve()} disabled={loading}>
+               <button className={`mt-4 w-full text-white font-bold py-2 px-4 rounded flex justify-center items-center ${loading ? 'bg-blue-400/90 hover:bg-blue-400/90' : 'bg-blue-500 hover:bg-blue-700'}`} onClick={() => handleRetrieve()} disabled={loading}>
                   Retrieve Drug
                   {loading && <Loader />}
                </button>
             )}
             {(drugId && loading) &&
-               <div className='w-full flex justify-center items-center'>
+               <div className='w-full flex justify-center items-center text-blue-500'>
                   <Loader />
                </div>
             }

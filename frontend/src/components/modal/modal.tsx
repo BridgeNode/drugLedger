@@ -11,7 +11,7 @@ import { selectRandomDrugs } from '../../../sample'
 
 const Modal = ({ close, closeFn }: { close: boolean, closeFn: Function }) => {
    const account = useAccount()
-   const [url, setUrl] = useState<string>()
+   const [url, setUrl] = useState<string>("hhh")
    const [fields, setFields] = useState({
       drugName: "",
       genericName: "",
@@ -38,7 +38,7 @@ const Modal = ({ close, closeFn }: { close: boolean, closeFn: Function }) => {
       }
       try {
          const id = await uploadFile();
-         setUrl(`${process.env.URL}/drug/${id}`)
+         setUrl(`${window.location.href}/drug/${id}`)
          setloading(false)
       } catch (error) {
          console.log(error)
@@ -124,7 +124,7 @@ const Modal = ({ close, closeFn }: { close: boolean, closeFn: Function }) => {
                      <input type="text" name="uniqueIdentifier" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='QR123XYZ456' onChange={(e) => handleChange(e)}  value={fields.uniqueIdentifier}/>
                   </div>
                </div>
-               <button className={`mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex justify-center items-center ${loading ? 'bg-blue-400/90 hover:bg-blue-400/90' : ''}`} onClick={handleRegister} disabled={loading}>
+               <button className={`mt-4 w-full text-white font-bold py-2 px-4 rounded flex justify-center items-center ${loading ? 'bg-blue-400/90 hover:bg-blue-400/90' : 'bg-blue-500 hover:bg-blue-700'}`} onClick={handleRegister} disabled={loading}>
                   Register
                   {loading && <Loader />}
                </button>
