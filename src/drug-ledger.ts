@@ -64,8 +64,8 @@ export function handleManufacturerRevoked(
   let entity = new ManufacturerRevoked(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
-  entity.name = event.params.name
-  entity.license = event.params.license
+  entity.name = event.params.name.toString()
+  entity.license = event.params.license.toString()
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -80,7 +80,7 @@ export function handleRegisteredManufacturer(
   let entity = new RegisteredManufacturer(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
-  entity.name = event.params.name
+  entity.name = event.params.name.toString()
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
