@@ -13,7 +13,7 @@ const RegisterModal = ({ close, closeFn }: { close: boolean, closeFn: Function }
    const [fields, setFields] = useState({
       name: '',
       license: '',
-      address: ''
+      address: account.address as string
    })
    const handleChange = (e: any) => {
       setFields({ ...fields, [e.target.name]: e.target.value })
@@ -74,7 +74,7 @@ const RegisterModal = ({ close, closeFn }: { close: boolean, closeFn: Function }
                </div>
                <div className='flex flex-col mb-2'>
                   <p className='py-1 px-1 text-[13px] text-gray-900'>Address</p>
-                  <input type="text" name="address" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='Enter Manufacturer Address' onChange={(e) => handleChange(e)} />
+                  <input type="text" name="address" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='Enter Manufacturer Address' onChange={(e) => handleChange(e)} value={fields.address}/>
                </div>
             </div>
             <button className={`mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${loading ? 'bg-blue-400/90 hover:bg-blue-400/90' : ''} flex justify-center items-center`} onClick={handleRegister} disabled={false}>

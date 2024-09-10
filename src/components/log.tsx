@@ -1,8 +1,8 @@
 import React from 'react'
 
-const Log = ({ drugId, action, from, entity }: { drugId: string, action: string, from: string, entity: string }) => {
+const Log = ({ drugId, action, from, entity }: { drugId: number, action: string, from: string, entity: string }) => {
    return (
-      <div className="bg-gray-200 shadow-md rounded-md p-2 px-4 w-full mb-2">
+      <div className="bg-white border-t-2 border-gray-300 border-solid p-2 px-3 w-full mb-2">
                   <div className='flex justify-between'>
             <p className="text-sm text-gray-900 mb-1">
                {entity}

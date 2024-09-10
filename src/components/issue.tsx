@@ -28,11 +28,11 @@ const Issue = ({ drugId, issueId, name, description, date, owner, resolved, reas
       setFields({ ...fields, [e.target.name]: e.target.value })
    }
    return (
-      <div className="bg-gray-100 shadow-md rounded-md p-4 w-full">
+      <div className="bg-sky-50 shadow-sm rounded-md p-4 w-full">
          <div className='flex justify-between'>
             <h3 className="text-md font-semibold text-gray-800 mb-1">{name}</h3>
             <p className="text-sm text-gray-600">
-               <span className={`text-red-500 ${resolved ? 'text-green-400' : 'text-red-500'}`}>{resolved ? "Resolved" : "Unresolved"}</span>
+               <span className={`${resolved ? 'text-green-600' : 'text-red-500'}`}>{resolved ? "Resolved" : "Unresolved"}</span>
             </p>
 
          </div>

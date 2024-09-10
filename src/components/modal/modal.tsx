@@ -6,9 +6,11 @@ import { useAccount } from 'wagmi'
 import toast from "react-hot-toast"
 import { contract } from '@/backend/init'
 import Loader from '../loader'
+import FinalizeModal from './finalize'
 
 const Modal = ({ close, closeFn }: { close: boolean, closeFn: Function }) => {
    const account = useAccount()
+   const [url, setUrl] = useState<string>()
    const [fields, setFields] = useState({
       drugName: "",
       genericName: "",
@@ -32,9 +34,10 @@ const Modal = ({ close, closeFn }: { close: boolean, closeFn: Function }) => {
          return setloading(false)
       }
       try {
-         await uploadFile();
+         const id = await uploadFile();
+         setUrl(`${process.env.URL}/drug/${id}`)
          setloading(false)
-      } catch(error) {
+      } catch (error) {
          console.log(error)
          setloading(false)
       }
@@ -42,78 +45,82 @@ const Modal = ({ close, closeFn }: { close: boolean, closeFn: Function }) => {
 
    const uploadFile = async () => {
       try {
-        const uploadRequest = await fetch("/api/files", {
-          method: "POST",
-          body: JSON.stringify(fields),
-        });
-        const results = await uploadRequest.json();
-        setCid(results.url);
-        toast.success(results.url)
-        await contract.methods.registerDrug(results.cid).send({ from: account.address}).then((res: any) => toast.success(`Drug Registered`))
+         const uploadRequest = await fetch("/api/files", {
+            method: "POST",
+            body: JSON.stringify(fields),
+         });
+         const results = await uploadRequest.json();
+         setCid(results.url);
+         toast.success(results.url)
+         const id = await contract.methods.registerDrug(results.cid).send({ from: account.address }).then((res: any) => toast.success(`Drug Registered`))
+         return id;
       } catch (e) {
-        console.log(e);
+         console.log(e);
       }
-    };
-  
-   
+   };
+
+
    return (
-      <Closure close={close} closeFn={closeFn}>
-         <div className='w-[85vw] md:w-[80vw] max-h-[90vh] lg:w-[40vw] xl:[w-50vw] h-fit bg-white rounded-md p-5 shadow-sm'>
-            <Header title='Register Drug' />
-            <div className='overflow-auto'>
-               <div className='flex flex-col mb-2'>
-                  <p className='py-1 px-1 text-[13px] text-gray-900'>Drug Name</p>
-                  <input type="text" name="drugName" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='Enter Drug name' onChange={(e) => handleChange(e)} />
-               </div>
-               <div className='flex flex-col mb-2'>
-                  <p className='py-1 px-1 text-[13px] text-gray-900'>Generic Name</p>
-                  <input type="text" name="genericName" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='Enter Generic name' onChange={(e) => handleChange(e)}/>
-               </div>
-               <div className='flex'>
-                  <div className='flex flex-col mb-2 w-full mr-3'>
-                     <p className='py-1 px-1 text-[13px] text-gray-900'>Dosage Form</p>
-                     <input type="text" name="dosageForm" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='Tablet' onChange={(e) => handleChange(e)}/>
+      <>
+         <FinalizeModal url={url} setUrl={setUrl}/>
+         <Closure close={close} closeFn={closeFn}>
+            <div className='w-[85vw] md:w-[80vw] max-h-[90vh] lg:w-[40vw] xl:[w-50vw] h-fit bg-white rounded-md p-5 shadow-sm'>
+               <Header title='Register Drug' />
+               <div className='overflow-auto'>
+                  <div className='flex flex-col mb-2'>
+                     <p className='py-1 px-1 text-[13px] text-gray-900'>Drug Name</p>
+                     <input type="text" name="drugName" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='Enter Drug name' onChange={(e) => handleChange(e)} />
                   </div>
-                  <div className='flex flex-col mb-2 w-full'>
-                     <p className='py-1 px-1 text-[13px] text-gray-900'>Dosage Strength</p>
-                     <input type="text" name="dosageStrength" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='500mg' onChange={(e) => handleChange(e)}/>
+                  <div className='flex flex-col mb-2'>
+                     <p className='py-1 px-1 text-[13px] text-gray-900'>Generic Name</p>
+                     <input type="text" name="genericName" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='Enter Generic name' onChange={(e) => handleChange(e)} />
+                  </div>
+                  <div className='flex'>
+                     <div className='flex flex-col mb-2 w-full mr-3'>
+                        <p className='py-1 px-1 text-[13px] text-gray-900'>Dosage Form</p>
+                        <input type="text" name="dosageForm" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='Tablet' onChange={(e) => handleChange(e)} />
+                     </div>
+                     <div className='flex flex-col mb-2 w-full'>
+                        <p className='py-1 px-1 text-[13px] text-gray-900'>Dosage Strength</p>
+                        <input type="text" name="dosageStrength" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='500mg' onChange={(e) => handleChange(e)} />
+                     </div>
+
+                  </div>
+                  <div className='flex flex-col mb-2'>
+                     <p className='py-1 px-1 text-[13px] text-gray-900'>Batch Number</p>
+                     <input type="text" name="batchNumber" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='A12345' onChange={(e) => handleChange(e)} />
+                  </div>
+                  <div className='flex'>
+                     <div className='flex flex-col mb-2 w-full mr-3'>
+                        <p className='py-1 px-1 text-[13px] text-gray-900'>Manufacturer Date</p>
+                        <input type="date" name="manufacturerDate" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='DD-MM-YYYY' onChange={(e) => handleChange(e)} />
+                     </div>
+                     <div className='flex flex-col mb-2 w-full'>
+                        <p className='py-1 px-1 text-[13px] text-gray-900'>Expiration Date</p>
+                        <input type="date" name="expirationDate" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='DD-MM-YYYY' onChange={(e) => handleChange(e)} />
+                     </div>
                   </div>
 
-               </div>
-               <div className='flex flex-col mb-2'>
-                  <p className='py-1 px-1 text-[13px] text-gray-900'>Batch Number</p>
-                  <input type="text" name="batchNumber" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='A12345' onChange={(e) => handleChange(e)}/>
-               </div>
-               <div className='flex'>
-                  <div className='flex flex-col mb-2 w-full mr-3'>
-                     <p className='py-1 px-1 text-[13px] text-gray-900'>Manufacturer Date</p>
-                     <input type="date" name="manufacturerDate" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='DD-MM-YYYY' onChange={(e) => handleChange(e)}/>
+                  <div className='flex flex-col mb-2'>
+                     <p className='py-1 px-1 text-[13px] text-gray-900'>Certification Number</p>
+                     <input type="text" name="certificateNumber" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='FDA-APP-87654321' onChange={(e) => handleChange(e)} />
+                  </div>
+                  <div className='flex flex-col mb-2'>
+                     <p className='py-1 px-1 text-[13px] text-gray-900'>Quality Control</p>
+                     <input type="text" name="qualityControl" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='ISO-9001 Certified' onChange={(e) => handleChange(e)} />
                   </div>
                   <div className='flex flex-col mb-2 w-full'>
-                     <p className='py-1 px-1 text-[13px] text-gray-900'>Expiration Date</p>
-                     <input type="date" name="expirationDate" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='DD-MM-YYYY' onChange={(e) => handleChange(e)}/>
+                     <p className='py-1 px-1 text-[13px] text-gray-900'>Unique Identifier</p>
+                     <input type="text" name="uniqueIdentifier" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='QR123XYZ456' onChange={(e) => handleChange(e)} />
                   </div>
                </div>
-
-               <div className='flex flex-col mb-2'>
-                  <p className='py-1 px-1 text-[13px] text-gray-900'>Certification Number</p>
-                  <input type="text" name="certificateNumber" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='FDA-APP-87654321' onChange={(e) => handleChange(e)}/>
-               </div>
-               <div className='flex flex-col mb-2'>
-                  <p className='py-1 px-1 text-[13px] text-gray-900'>Quality Control</p>
-                  <input type="text" name="qualityControl" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='ISO-9001 Certified' onChange={(e) => handleChange(e)}/>
-               </div>
-               <div className='flex flex-col mb-2 w-full'>
-                  <p className='py-1 px-1 text-[13px] text-gray-900'>Unique Identifier</p>
-                  <input type="text" name="uniqueIdentifier" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='QR123XYZ456' onChange={(e) => handleChange(e)}/>
-               </div>
+               <button className={`mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex justify-center items-center ${loading ? 'bg-blue-400/90 hover:bg-blue-400/90' : ''}`} onClick={handleRegister} disabled={loading}>
+                  Register
+                  {loading && <Loader />}
+               </button>
             </div>
-            <button className={`mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex justify-center items-center ${loading ? 'bg-blue-400/90 hover:bg-blue-400/90': ''}`} onClick={handleRegister} disabled={loading}>
-               Register
-               {loading && <Loader />}
-            </button>
-         </div>
-      </Closure>
+         </Closure>
+      </>
    )
 }
 

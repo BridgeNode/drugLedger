@@ -1,10 +1,9 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Header from '../header'
 import Closure from './closure'
 import { useAccount } from 'wagmi'
 import toast from "react-hot-toast"
-import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { contract } from '@/backend/init'
 import Loader from '../loader'
 import Issue from '../issue'
@@ -12,16 +11,18 @@ import Log from '../log'
 import { FcCollapse, FcExpand } from "react-icons/fc";
 import OpenIssue from '../openIssue'
 import AddLogs from '../addLogs'
-import { FaPlus } from "react-icons/fa6";
+import VerifyBox from '../verify'
 
-const DrugModal = ({ close, closeFn }: { close: boolean, closeFn: Function }) => {
+const DrugModal = ({ close, closeFn, drugId }: { close: boolean, closeFn: Function, drugId?: number }) => {
    const account = useAccount()
    const [loading, setLoading] = useState<boolean>(false)
-   const [collapsed, setCollapsed] = useState<boolean>(true)
-   const [issuesCollapsed, setIssuesCollapsed] = useState<boolean>(false)
+   const [collapsed, setCollapsed] = useState<boolean>(false)
+   const [issuesCollapsed, setIssuesCollapsed] = useState<boolean>(true)
+   const [verifyCollapsed, setVerifyCollapsed] = useState<boolean>(true)
    const [logsCollapsed, setLogsCollapsed] = useState<boolean>(false)
    const [openIssue, setOpenIssue] = useState<boolean>(false)
    const [addLog, setAddLog] = useState<boolean>(false)
+   const [cid, setCid] = useState<string>()
    const [drugData, setDrugData] = useState({
       drugName: "",
       genericName: "",
@@ -35,18 +36,7 @@ const DrugModal = ({ close, closeFn }: { close: boolean, closeFn: Function }) =>
       uniqueIdentifier: "",
       manufacturer: ""
    })
-   const [logs, setLogs] = useState([{
-      drugId: "2343",
-      entity: "Noble",
-      action: "Delivered",
-      from: "ox33"
-   }, {
-      drugId: "2343",
-      entity: "Noble",
-      action: "Delivered",
-      from: "ox33"
-   }
-   ])
+   const [logs, setLogs] = useState<{ drugId: number, entity: string, action: string, from: string }[]>([])
    const [issues, setIssues] = useState({
       issues: [],
       drugId: '',
@@ -57,24 +47,33 @@ const DrugModal = ({ close, closeFn }: { close: boolean, closeFn: Function }) =>
    const handleChange = (e: any) => {
       setFields({ ...fields, [e.target.name]: e.target.value })
    }
-   const handleRetrieve = async () => {
+   const handleRetrieve = useCallback(async (_id?: number) => {
+      const _drugId = _id ? _id : fields.drugId
       setLoading(true)
       try {
-         const drug = await contract.methods.retrieve(parseInt(fields.drugId)).call()
+         const drug = await contract.methods.retrieve(_drugId).call()
          if (drug.cid.length === 0) {
             setLoading(false)
             toast.error('No drug found with this ID')
             return
          }
-         console.log(drug)
-         setIssues({issues: drug.issues, drugId: fields.drugId})
+         const returnLogs = await contract.getPastEvents('Log', {
+            fromBlock: 0,
+            toBlock: 'latest'
+         });
          const result = await fetch(`/api/files?cid=${drug.cid}`, {
             method: "GET"
          })
          const data = await result.json()
+         const newLog = []
+         for (let index = 0; index < returnLogs.length; index++) {
+            const element = returnLogs[index];
+            newLog.push(element.returnValues)
+         }
          setDrugData({ ...data.data, manufacturer: drug.manufacturer })
-         const logs = await contract.events.Log()
-         console.log(logs)
+         setIssues({ issues: drug.issues, drugId: _drugId as string })
+         setLogs(newLog as any)
+         setCid(drug.cid)
          toast.success('Drug retrieved successfully')
          setLoading(false)
       } catch (error) {
@@ -82,25 +81,26 @@ const DrugModal = ({ close, closeFn }: { close: boolean, closeFn: Function }) =>
          toast.error('Error retrieving drug')
          console.error(error)
       }
-   }
+   }, [fields.drugId])
+
+   useEffect(() => {
+      drugId && handleRetrieve(drugId)
+   }, [drugId, handleRetrieve])
    return (
       <Closure close={close} closeFn={closeFn}>
-         <div className='w-[85vw] md:w-[80vw] max-h-[80vh] h-fit lg:w-[40vw] xl:[w-50vw] bg-white rounded-md p-5 shadow-sm flex flex-col overflow-hidden'>
-            <Header title='Retrieve' />
-            <div className=''>
+         <div className='w-[85vw] md:w-[80vw] max-h-[80vh] h-fit lg:w-[40vw] xl:[w-50vw] bg-white rounded-md p-5 shadow-sm overflow-hidden'>
+            <Header title={`Retrieve #${drugId || fields.drugId}`} />
+            {!drugId && (
                <div className='flex flex-col mb-2'>
                   <p className='py-1 px-1 text-[13px] text-gray-900'>Drug Id</p>
                   <input type="text" name="drugId" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='Enter Drug Id' onChange={(e) => handleChange(e)} />
                </div>
-               {drugData.drugName !== "" && <div className={`h-fit ${collapsed ? '' : 'h-[2rem]'} overflow-hidden px-2`}>
-                  <button className='w-full p-2 px-0 h-[2rem] flex justify-between items-center' onClick={() => {
-                     setCollapsed(!collapsed);
-                     setIssuesCollapsed(false);
-                     setLogsCollapsed(false)
-                  }}>Details
-                     {collapsed ? <FcCollapse /> : <FcExpand />}
-                  </button>
-                  <div className="h-[50vh] flex-1 overflow-auto bg-gray-00">
+            )}
+            {drugData.drugName !== "" && <div className={`h-fit overflow-hidden px-2`}>
+               <button className='w-full p-2 px-0 h-[2rem] flex justify-between items-center' onClick={() => setCollapsed(!collapsed)}>Details
+                  {collapsed ? <FcExpand /> : <FcCollapse />}
+               </button>
+               <div className={`h-[50vh] flex-1 overflow-auto bg-gray-00 ${collapsed ? 'hidden' : 'flex flex-col'}`}>
 
                   <div className='flex flex-col mb-2'>
                      <p className='py-1 px-1 text-[13px] text-gray-900'>Drug Name</p>
@@ -150,59 +150,69 @@ const DrugModal = ({ close, closeFn }: { close: boolean, closeFn: Function }) =>
                      <p className='py-1 px-1 text-[13px] text-gray-900'>Manufacturer</p>
                      <p className='py-2 px-3 text-[14px] bg-gray-100 rounded'>{drugData.manufacturer}</p>
                   </div>
-                  </div>
-               </div>}
+               </div>
+            </div>}
 
 
-               {logs.length > 0 && <div className={`bg-red-00 h-fit ${logsCollapsed ? '' : 'h-[2rem]'} overflow-hidden`} >
-                  <button className='w-full p-2 h-[2rem] flex justify-between items-center' onClick={(e) => {
-                     // if (e.currentTarget === e.target) {}
-                        setCollapsed(false);
-                        setIssuesCollapsed(false);
-                        setLogsCollapsed(!logsCollapsed)
-                  }}>
-                     <div className='flex'>logs
-                        {/* <button className='mx-2 bg-gray-100 px-2 rounded-sm flex justify-center items-center text-sm' onClick={() => setAddLog(!addLog)}><FaPlus /></button> */}
-                     </div>
-                     {logsCollapsed ? <FcCollapse /> : <FcExpand />}
-                  </button>
+            {logs.length > 0 && <div className={`bg-red-00 h-fit overflow-hidden`} >
+               <button className='w-full p-2 h-[2rem] flex justify-between items-center' onClick={() => setLogsCollapsed(!logsCollapsed)}>
+                  <div className='flex'>Logs</div>
+                  {logsCollapsed ? <FcExpand /> : <FcCollapse />}
+               </button>
+               <div className={`${logsCollapsed ? 'hidden' : 'flex flex-col'}`}>
                   {/* Todo: remove hardcoded value of drugId */}
-                  {addLog && <AddLogs drugId={0}/>}
+                  {addLog && <AddLogs drugId={drugId ? drugId : fields.drugId} />}
                   <div>
                      {logs.map((log, key) =>
                         <Log {...log} key={key} />
                      )}
-                     <button className='w-fit p-1 px-4 m-2 mx-0 text-white bg-blue-500 rounded-md ' onClick={()=> setAddLog(true)}>Add Log</button>
+                     <button className='w-fit p-1 px-4 m-2 mx-0 text-white bg-blue-500 rounded-md ' onClick={() => setAddLog(true)}>Add Log</button>
                   </div>
-               </div>}
-               {issues.issues.length > 0 && <div className={`bg-red-00 h-fit ${issuesCollapsed ? '' : 'h-[2rem]'} overflow-hidden`} >
-                  <button className='w-full p-2 h-[2rem] flex justify-between items-center' onClick={() => {
-                     setCollapsed(false);
-                     setLogsCollapsed(false)
-                     setIssuesCollapsed(!issuesCollapsed);
-                  }}>Issues
-                     {issuesCollapsed ? <FcCollapse /> : <FcExpand />}
-                  </button>
+
+               </div>
+            </div>}
+            {issues.issues.length > 0 && <div className={`bg-red-00 h-fit overflow-hidden`} >
+               <button className='w-full p-2 h-[2rem] flex justify-between items-center' onClick={() => setIssuesCollapsed(!issuesCollapsed)}>Issues
+                  {issuesCollapsed ? <FcExpand /> : <FcCollapse />}
+               </button>
+               <div className={`${issuesCollapsed ? 'hidden' : 'flex flex-col'}`}>
                   {/* Todo: remove hardcoded value of drugId */}
-                  {openIssue && 
-                  <OpenIssue drugId={0}/>
+                  {openIssue &&
+                     <OpenIssue drugId={drugId ? drugId : fields.drugId} />
                   }
 
                   <div className='px-2'>
                      {issues.issues.map((issue, key) =>
                         <Issue {...issue as any} drugId={issues.drugId} issueId={key} key={key} />
                      )}
-                     <button className='w-fit p-1 px-4 m-2 mx-0 text-white bg-blue-500 rounded-md ' onClick={()=> setOpenIssue(true)}>Add Issue</button>
+                     <button className='w-fit p-1 px-4 m-2 mx-0 text-white bg-blue-500 rounded-md ' onClick={() => setOpenIssue(true)}>Add Issue</button>
                   </div>
-               </div>}
-            </div>
-            <button className={`mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex justify-center items-center ${loading ? 'bg-blue-400/90 hover:bg-blue-400/90' : ''}`} onClick={handleRetrieve} disabled={loading}>
-               Retrieve Drug
-               {loading && <Loader />}
-            </button>
+
+               </div>
+            </div>}
+            {cid && <div className={`bg-red-00 h-fit overflow-hidden`} >
+               <button className='w-full p-2 h-[2rem] flex justify-between items-center' onClick={() => setVerifyCollapsed(!verifyCollapsed)}>Verify
+                  {verifyCollapsed ? <FcExpand /> : <FcCollapse />}
+               </button>
+               <div className={`${verifyCollapsed ? 'hidden' : 'flex flex-col'}`}>
+                  <VerifyBox url={cid as string} />
+               </div>
+            </div>}
+            {!drugId && (
+               <button className={`mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex justify-center items-center ${loading ? 'bg-blue-400/90 hover:bg-blue-400/90' : ''}`} onClick={() => handleRetrieve()} disabled={loading}>
+                  Retrieve Drug
+                  {loading && <Loader />}
+               </button>
+            )}
+            {(drugId && loading) &&
+               <div className='w-full flex justify-center items-center'>
+                  <Loader />
+               </div>
+            }
          </div>
       </Closure >
    )
 }
 
 export default DrugModal;
+
