@@ -88,3 +88,18 @@ export function handleRegisteredManufacturer(
 
   entity.save()
 }
+export function handleRegisteredDrug(
+  event: RegisteredDrugEvent
+): void {
+  let entity = new RegisteredDrug(
+    event.transaction.hash.concatI32(event.logIndex.toI32())
+  )
+  entity.drugId = event.params.drugId
+  entity.manufacturer = event.params.manufacturer
+
+  entity.blockNumber = event.block.number
+  entity.blockTimestamp = event.block.timestamp
+  entity.transactionHash = event.transaction.hash
+
+  entity.save()
+}

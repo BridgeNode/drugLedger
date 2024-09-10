@@ -21,6 +21,7 @@ dataSources:
         - Log
         - ManufacturerRevoked
         - RegisteredManufacturer
+        - RegisteredDrug
       abis:
         - name: DrugLedger
           file: ./abis/DrugLedger.json
@@ -35,4 +36,6 @@ dataSources:
           handler: handleManufacturerRevoked
         - event: RegisteredManufacturer(indexed string)
           handler: handleRegisteredManufacturer
+        - event: RegisteredDrug(indexed uint256,address)
+          handler: handleRegisteredDrug
       file: ./src/drug-ledger.ts
