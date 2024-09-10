@@ -3,14 +3,17 @@ import {
   IssueOpened as IssueOpenedEvent,
   Log as LogEvent,
   ManufacturerRevoked as ManufacturerRevokedEvent,
-  RegisteredManufacturer as RegisteredManufacturerEvent
+  RegisteredManufacturer as RegisteredManufacturerEvent,
+  RegisteredDrug as RegisteredDrugEvent
 } from "../generated/DrugLedger/DrugLedger"
 import {
   IssueClosed,
   IssueOpened,
   Log,
   ManufacturerRevoked,
-  RegisteredManufacturer
+  RegisteredManufacturer,
+  RegisteredDrug
+  
 } from "../generated/schema"
 
 export function handleIssueClosed(event: IssueClosedEvent): void {
@@ -95,7 +98,7 @@ export function handleRegisteredDrug(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
   entity.drugId = event.params.drugId
-  entity.manufacturer = event.params.manufacturer
+  entity.manufacturerId = event.params.manufacturer
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp

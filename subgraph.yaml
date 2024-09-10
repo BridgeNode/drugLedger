@@ -36,6 +36,6 @@ dataSources:
           handler: handleManufacturerRevoked
         - event: RegisteredManufacturer(indexed string)
           handler: handleRegisteredManufacturer
-        - event: RegisteredDrug(indexed uint256,address)
+        - event: RegisteredDrug(indexed uint256,indexed string)
           handler: handleRegisteredDrug
       file: ./src/drug-ledger.ts
