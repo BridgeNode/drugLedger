@@ -10,8 +10,8 @@ const Navbar = () => {
       SetCloseRetrieveFn] = useState<boolean>(true);
    return (
       <>
-         <div className="w-full p-3 bg-gray-200 flex justify-between items-center px-10">
-            <p className="font-semibold font-serif text-xl">DrugLedger</p>
+         <div className="p-3 bg-[#023e8a] text-white flex justify-between items-center px-10 rounded-[3rem] fixed mt-5 m-2 lg:w-[80vw] md:w-[90vw] max-md:w-[95vw] shadow-md">
+            <p className="font-semibold font-serif text-xl gothic">DrugLedger</p>
 
             <div className='w-fit flex'>
                {/* <button className='px-2' onClick={() => setRegister(false)}>Register</button> */}

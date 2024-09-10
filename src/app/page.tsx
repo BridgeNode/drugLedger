@@ -44,11 +44,11 @@ export default function Home() {
          {/* <button onClick={() => setClose(!close)}>Open</button>
          <button onClick={() => getManufacturer()}>Get Manu</button> */}
 
-         <div className="w-full h-[92vh] bg-red-300 flex justify-center items-center">
-            <div className="w-full h-full bg-blue-300 flex flex-col items-center hero py-[30vh]">
+         <div className="w-full h-[92vh] bg-white flex justify-center items-center">
+            <div className="md:w-[80vw] w-full h-full bg-blue-300 flex flex-col items-center hero py-[30vh]">
                <h3 className="text-[2.5rem] text-center font-semibold leading-tight font-serif w-[80vw] max-sm:w-full">Revolutionizing Healthcare with Blockchain</h3>
                <h2 className="text-xl text-center my-4 w-[40rem]">Secure, transparent, and patient-centric healthcare data sharing. Empower your health with trustless, decentralized technology</h2>
-               <button className="p-2 px-4 bg-green-400 text-black rounded-md m-2 flex justify-center items-center" onClick={handleSubmit} disabled={loading}>Register Here {loading && <Loader />}</button>
+               <button className="p-3 px-10 bg-[#ff7d00] shadow-lg text-black rounded-full m-2 flex justify-center items-center" onClick={handleSubmit} disabled={loading}>Register Here {loading && <Loader />}</button>
             </div>
          </div>
          <RegisterModal close={register} closeFn={setRegister} />

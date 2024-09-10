@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Dela_Gothic_One } from "next/font/google";
 import "./globals.css";
 import RainbowKitSetup from "@/context/rainbowkitSetup";
 import { Toaster } from "react-hot-toast";
-const inter = Inter({ subsets: ["latin"] });
+const gothic = Dela_Gothic_One({
+   subsets: ["cyrillic"],
+   weight: "400",
+    style: "normal" 
+});
 
 export const metadata: Metadata = {
    title: "DrugLedger",
@@ -17,7 +21,7 @@ export default function RootLayout({
 }>) {
    return (
       <html lang="en">
-         <body className={inter.className}>
+         <body className={gothic.className}>
             <Toaster />
             <RainbowKitSetup>
                {children}
