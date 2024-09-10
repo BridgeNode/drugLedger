@@ -8,7 +8,7 @@ if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
    web3 = new Web3(window.ethereum);
    contract = new web3.eth.Contract(abi.abi, address)
 } else {
-   const provider = new Web3.providers.HttpProvider(process.env.OPTIMISM_SEPOLIA_RPC_URL as string);
+   const provider = new Web3.providers.HttpProvider(process.env.NEXT_PUBLIC_OPTIMISM_SEPOLIA_RPC_URL as string);
    web3 = new Web3(provider);
    contract = new web3.eth.Contract(abi.abi, address)
 }

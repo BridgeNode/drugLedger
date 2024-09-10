@@ -27,6 +27,7 @@ export default function Home() {
       setLoading(true)
       try {
          const manu = await getManufacturer();
+         console.log(manu)
          if (manu.name !== "") {
             setRegisterDrug(false)
          } else {

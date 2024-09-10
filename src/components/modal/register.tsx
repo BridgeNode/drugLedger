@@ -19,7 +19,7 @@ const RegisterModal = ({ close, closeFn }: { close: boolean, closeFn: Function }
       if (account?.address) {
          setFields(prevValues =>({
             ...prevValues,
-            address: `${account.address}`,
+            address: account.address as string,
          }))
       }
    }, [account?.address])
@@ -49,8 +49,9 @@ const RegisterModal = ({ close, closeFn }: { close: boolean, closeFn: Function }
             gasPrice: gasPrice,
             data: contract.methods.register(fields.address, fields.name, fields.license).encodeABI()
          }
-         const privateKey = process.env.PRIVATE_KEY
+         const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY
          const signedTx = await web3.eth.accounts.signTransaction(tx, privateKey)
+         console.log(signedTx)
          const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
          toast.success(`Registration successful`)
          closeFn(true)
@@ -62,10 +63,8 @@ const RegisterModal = ({ close, closeFn }: { close: boolean, closeFn: Function }
          })
       } catch (error: any) {
          setLoading(false)
-         // console.log(error?.data?.message)
          console.log(error)
-         toast.error(error.data.message)
-         toast.error("Registration failed")
+         toast.error("Registration failed " + error?.data?.message)
       }
    }
    return (
@@ -86,7 +85,7 @@ const RegisterModal = ({ close, closeFn }: { close: boolean, closeFn: Function }
                   <input type="text" name="address" id="" className='w-full bg-transparent rounded border-2 border-solid border-sky-500/80 p-2  outline-none focus:border-sky-600' placeholder='Enter Manufacturer Address' onChange={(e) => handleChange(e)} value={fields.address}/>
                </div>
             </div>
-            <button className={`mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${loading ? 'bg-blue-400/90 hover:bg-blue-400/90' : ''} flex justify-center items-center`} onClick={handleRegister} disabled={false}>
+            <button className={`mt-4 w-full text-white font-bold py-2 px-4 rounded ${loading ? 'bg-blue-400/90 hover:bg-blue-400/90' : 'bg-blue-500 hover:bg-blue-700'} flex justify-center items-center`} onClick={handleRegister} disabled={false}>
                Register Manufacturer {loading && <Loader />}
             </button>
          </div>
