@@ -46,3 +46,11 @@ type RegisteredManufacturer @entity(immutable: true) {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
+type RegisteredDrug @entity(immutable: true) {
+  id: Bytes!
+  drugId: BigInt! # uint256
+  manufacturerId: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
