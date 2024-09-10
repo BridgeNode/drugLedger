@@ -36,6 +36,14 @@ const config: HardhatUserConfig = {
             apiURL: "https://sepolia-blockscout.lisk.com/api",
             browserURL: "https://sepolia-blockscout.lisk.com"
          }
+      },
+      {
+         network: "optimismSepolia",
+         chainId: 11155420,
+         urls: {
+            apiURL: "https://optimism-sepolia.blockscout.com/api",
+            browserURL: "https://optimism-sepolia.blockscout.com/"
+         }
       }
    ]
   },

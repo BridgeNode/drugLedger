@@ -1,5 +1,5 @@
 "use client"
-import React, { InputHTMLAttributes, useState } from 'react'
+import React, { InputHTMLAttributes, useEffect, useState } from 'react'
 import Header from '../header'
 import Closure from './closure'
 import { useAccount } from 'wagmi'
@@ -13,8 +13,16 @@ const RegisterModal = ({ close, closeFn }: { close: boolean, closeFn: Function }
    const [fields, setFields] = useState({
       name: '',
       license: '',
-      address: account.address as string
+      address: ''
    })
+   useEffect(() => {
+      if (account?.address) {
+         setFields(prevValues =>({
+            ...prevValues,
+            address: `${account.address}`,
+         }))
+      }
+   }, [account?.address])
    const handleChange = (e: any) => {
       setFields({ ...fields, [e.target.name]: e.target.value })
    }
@@ -32,7 +40,6 @@ const RegisterModal = ({ close, closeFn }: { close: boolean, closeFn: Function }
             to: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
             data: contract.methods.register(fields.address, fields.name, fields.license).encodeABI(),
          })
-         console.log(fields)
          const safeGas = Math.ceil(Number(estimatedGas) * 1.2);
          const gasPrice = await web3.eth.getGasPrice();
          const tx = {
@@ -55,7 +62,7 @@ const RegisterModal = ({ close, closeFn }: { close: boolean, closeFn: Function }
       } catch (error: any) {
          console.log(error?.data?.message)
          toast.error(error.data.message)
-         // toast.error("Registration failed")
+         toast.error("Registration failed")
       }
       setLoading(false)
    }

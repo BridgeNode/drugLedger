@@ -2,13 +2,13 @@
 import '@rainbow-me/rainbowkit/styles.css';
 import { getDefaultConfig, RainbowKitProvider} from "@rainbow-me/rainbowkit";
 import {WagmiProvider } from "wagmi";
-import { liskSepolia } from "wagmi/chains"
+import { liskSepolia, optimismSepolia } from "wagmi/chains"
 import {QueryClientProvider, QueryClient} from "@tanstack/react-query"
 
 const config = getDefaultConfig({
    appName: "drugLedger",
    projectId: "id",
-   chains: [liskSepolia],
+   chains: [optimismSepolia],
    ssr: true
 })
 

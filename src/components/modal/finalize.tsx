@@ -39,7 +39,7 @@ const FinalizeModal = ({ url, setUrl }: { url: string | undefined, setUrl: Funct
          setLoading(false)
       } catch (error) {
          setLoading(false)
-         toast.error('Error retrieving QR Code')
+         // toast.error('Error retrieving QR Code')
          console.error(error)
       }
    },[url])
@@ -48,7 +48,7 @@ const FinalizeModal = ({ url, setUrl }: { url: string | undefined, setUrl: Funct
       generateQR()
    }, [generateQR])
    return (
-      // !close && (
+      url !== undefined && (
          <div className='w-full h-full fixed flex justify-center pt-[8vh] bg-white/30 backdrop-blur-[1px] z-[2]' onClick={() => setUrl(undefined)}>
             <div className='w-[85vw] md:w-[80vw] max-h-[90vh] lg:w-[40vw] xl:[w-50vw] h-fit bg-white rounded-md p-5 shadow-sm'> 
                <Header title='Certify your drugs with OUR QRCODE' />
@@ -71,7 +71,7 @@ const FinalizeModal = ({ url, setUrl }: { url: string | undefined, setUrl: Funct
             </div>
          </div>
 
-      // )
+      )
    )
 }
 
