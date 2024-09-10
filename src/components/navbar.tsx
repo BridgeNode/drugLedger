@@ -15,7 +15,7 @@ const Navbar = () => {
 
             <div className='w-fit flex'>
                {/* <button className='px-2' onClick={() => setRegister(false)}>Register</button> */}
-               <button className='px-2' onClick={() => SetCloseRetrieveFn(false)}>Get Drug</button>
+               <button className='px-2' onClick={() => SetCloseRetrieveFn(false)}>Drug Lookup</button>
             </div>
             <ConnectButton />
          </div>

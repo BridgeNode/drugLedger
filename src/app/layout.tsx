@@ -4,7 +4,7 @@ import "./globals.css";
 import RainbowKitSetup from "@/context/rainbowkitSetup";
 import { Toaster } from "react-hot-toast";
 const gothic = Dela_Gothic_One({
-   subsets: ["cyrillic"],
+   subsets: ["latin"],
    weight: "400",
     style: "normal" 
 });
@@ -13,6 +13,7 @@ export const metadata: Metadata = {
    title: "DrugLedger",
    description: "Providing health through traceability",
 };
+console.log(gothic.className)
 
 export default function RootLayout({
    children,
@@ -21,7 +22,7 @@ export default function RootLayout({
 }>) {
    return (
       <html lang="en">
-         <body className={gothic.className}>
+         <body className={`${gothic.className}`}>
             <Toaster />
             <RainbowKitSetup>
                {children}

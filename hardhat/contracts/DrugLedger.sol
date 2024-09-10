@@ -32,6 +32,7 @@ contract DrugLedger {
    event IssueOpened(uint256 indexed drugId, uint256 indexed issueId, string name, string description);
    event IssueClosed(uint256 indexed drugId, uint256 indexed issueId, string reason);
    event RegisteredManufacturer(string indexed name);
+   event RegisteredDrug(uint256 indexed drugId, string indexed manufacturer);
    event ManufacturerRevoked(string indexed name, string indexed license);
    event Log(uint256 indexed drugId, string entity, string action,address from);
    
@@ -67,9 +68,12 @@ contract DrugLedger {
    function registerDrug(string memory cid) external OnlyManufacturer() returns(uint256) {
       drugs[id].cid = cid;
       drugs[id].manufacturer = msg.sender;
-      id++;      
+      id++; 
+      string memory name = manufacturers[msg.sender].name;      
+      emit RegisteredDrug(id - 1, name);
       return id-1;
    }
+
 
    function retrieve(uint256 _id) view external returns(Drug memory) {
       return drugs[_id];

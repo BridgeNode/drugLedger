@@ -54,17 +54,19 @@ const RegisterModal = ({ close, closeFn }: { close: boolean, closeFn: Function }
          const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
          toast.success(`Registration successful`)
          closeFn(true)
+         setLoading(false)
          setFields({
             name: '',
             license: '',
             address: ''
          })
       } catch (error: any) {
-         console.log(error?.data?.message)
+         setLoading(false)
+         // console.log(error?.data?.message)
+         console.log(error)
          toast.error(error.data.message)
          toast.error("Registration failed")
       }
-      setLoading(false)
    }
    return (
       <Closure close={close} closeFn={closeFn}>
