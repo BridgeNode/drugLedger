@@ -1,36 +1,112 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# DrugLedger
+
+This is a decentralized project built with Next.js, Hardhat, and The Graph to ensure transparency and security in the drug supply chain. It provides an explorer for verifying drugs, tracking events, and logging actions securely on the blockchain.
+
+## Project Structure
+
+The project is divided into three main directories:
+
+- **/frontend**: The Next.js frontend that serves as the user interface for exploring drugs, logs, and events.
+- **/hardhat**: Smart contracts written and deployed using Hardhat, handling the core blockchain logic.
+- **/graph**: The Graph integration for indexing and querying blockchain data efficiently.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+Make sure you have the following installed:
+
+- Node.js (v16+)
+- Hardhat
+- The Graph CLI
+
+### Cloning the Repository
+
+Clone this repository to your local machine:
+
+```bash
+git clone https://github.com/
+```
+
+### Frontend Setup
+Navigate to the frontend directory:
+
+```bash
+cd frontend
+```
+
+### Install the dependencies:
+```bash
+npm install
+```
+
+### Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+The app will be running at http://localhost:3000.
+
+### Hardhat Setup
+Navigate to the hardhat directory:
+```bash
+cd hardhat
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Install the dependencies:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+```
+### Compile the smart contracts:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```bash
+npx hardhat compile
+```
+### Deploy the smart contracts:
 
-## Learn More
+```bash
+npx hardhat run scripts/deploy.js --network <your_network>
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Graph Setup
+Navigate to the graph directory:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+cd graph
+```
+### Generate the necessary code from the subgraph schema:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```bash
+graph codegen && graph build
+```
 
-## Deploy on Vercel
+### Deploy the subgraph:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run deploy
+```
+### Environment Variables
+To configure your environment, add the necessary API keys and environment variables in the .env file:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```bash
+NEXT_PUBLIC_GRAPH_URL=your-graph-url
+HARDHAT_NETWORK=your-network
+...etc
+```
+
+### Deployed Contracts
+Contract Address on **Optimism Sepolia**:
+Contract Address on **Lisk**: 
+
+### Deployed Site
+Website: [https://drug-ledger.vercel.app](https://drug-ledger.vercel.app)
+Live Demo: [Video](www.loom.com/share/6615fd2733fd4fffaf0e1f98081d1438)
+
+
+Learn More
+To learn more about the technologies used in this project, check out the following:
+
+Next.js Documentation - Learn about Next.js features and API.
+Hardhat Documentation - Learn how to build and test smart contracts.
+The Graph Documentation - Learn how to index and query blockchain dat
