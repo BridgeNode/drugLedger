@@ -56,7 +56,7 @@ const Modal = ({ close, closeFn }: { close: boolean, closeFn: Function }) => {
          setCid(results.url);
          const id = await contract.methods.registerDrug(results.cid).send({ from: account.address })
          toast.success(`Drug Registered`)
-         return id.events.RegisteredDrugs.returnValues.drugId;
+         return await id.events.RegisteredDrug.returnValues.drugId;
       } catch (e) {
          console.log(e);
       }
