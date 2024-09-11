@@ -103,13 +103,16 @@ const DrugExplorer = () => {
    const formatTime = (raw: number) => new Date(raw * 1000).toLocaleString();
 
    return (
-      <div className='lg:w-[70vw] md:w-[90vw] w-[95vw] bg-[#0c2442] shadow h-[35rem] relative top-[-10rem] p-6 items-center rounded-xl z-0 mx-auto px-4 overflow-hidden pb-10'>
+      <div className='lg:w-[70vw] md:w-[90vw] w-[95vw] bg-[#0c2442] shadow h-[35rem] relative md:top-[-5rem] lg:top-[-10rem] p-6 items-center rounded-xl z-0 mx-auto px-4 overflow-hidden pb-10'>
          <div className='w-full bg-red-00 h-[3rem] flex justify-between '>
-            <div className='w-full bg-transparent flex border-[2.5px] border-solid border-gray-300 hover:border-white rounded-lg overflow-hidden'>
-               <input type="text" className='w-full bg-blue-00 h-full outline-none px-5 bg-transparent text-white' placeholder='Search by Drug ID' onChange={(e) => setId(parseInt(e.target.value))} />
+            <form className='w-full bg-transparent flex border-[2.5px] border-solid border-gray-300 hover:border-white rounded-lg overflow-hidden' onSubmit={(e) => {
+               e.preventDefault()
+               get(id)
+            }}>
+               <input type="search" className='w-full bg-blue-00 h-full outline-none px-5 bg-transparent text-white' placeholder='Search by Drug ID' onChange={(e) => setId(parseInt(e.target.value))} />
                <button className='text-3xl px-5 text-white ' onClick={() => get(id)}><CiSearch />
                </button>
-            </div>
+            </form>
          </div>
 
          <ExplorerHeader txn='Transaction (Txn)' type='Type' method='Method' from='Timestamp' details='Details' />

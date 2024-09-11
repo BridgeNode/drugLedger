@@ -14,16 +14,7 @@ import AddLogs from '../addLogs'
 import VerifyBox from '../verify'
 import { gql, request } from 'graphql-request'
 
-const query = gql`{
-  logs {
-    id
-    drugId
-    entity
-    action
-    transactionHash
-    from
-  }
-}`
+
 const url = process.env.NEXT_PUBLIC_GRAPH_URL as string
 const DrugModal = ({ close, closeFn, drugId }: { close: boolean, closeFn: Function, drugId?: number }) => {
    const account = useAccount()
@@ -41,7 +32,7 @@ const DrugModal = ({ close, closeFn, drugId }: { close: boolean, closeFn: Functi
       dosageForm: "",
       dosageStrength: "",
       batchNumber: "",
-      manufacturerDate: "",
+      manufacturingDate: "",
       expirationDate: "",
       qualityControl: "",
       certificateNumber: "",
@@ -59,9 +50,20 @@ const DrugModal = ({ close, closeFn, drugId }: { close: boolean, closeFn: Functi
    const handleChange = (e: any) => {
       setFields({ ...fields, [e.target.name]: e.target.value })
    }
+   
    const handleRetrieve = useCallback(async (_id?: number) => {
 
-      const _drugId = _id ? _id : fields.drugId
+      const _drugId = (_id !== undefined && _id !== null) ? _id : fields.drugId
+      const query = gql`{
+         logs(where: {drugId: ${_drugId}}) {
+           id
+           drugId
+           entity
+           action
+           transactionHash
+           from
+         }
+       }`
       setLoading(true)
       try {
          const drug = await contract.methods.retrieve(_drugId).call()
@@ -132,7 +134,7 @@ const DrugModal = ({ close, closeFn, drugId }: { close: boolean, closeFn: Functi
                   <div className='flex'>
                      <div className='flex flex-col mb-2 w-full mr-3'>
                         <p className='py-1 px-1 text-[13px] text-gray-900'>Manufacturer Date</p>
-                        <p className='py-2 px-3 text-[14px] bg-gray-100 rounded'>{drugData.manufacturerDate}</p>
+                        <p className='py-2 px-3 text-[14px] bg-gray-100 rounded'>{drugData.manufacturingDate}</p>
                      </div>
                      <div className='flex flex-col mb-2 w-full'>
                         <p className='py-1 px-1 text-[13px] text-gray-900'>Expiration Date</p>
