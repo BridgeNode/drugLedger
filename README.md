@@ -4,7 +4,7 @@ This is a decentralized project built with Next.js, Hardhat, and The Graph to en
 
 Website: [https://drug-ledger.vercel.app](https://drug-ledger.vercel.app)
 
-Live Demo: [Video](https://www.loom.com/share/6615fd2733fd4fffaf0e1f98081d1438)
+Live Demo: [Video](https://www.loom.com/share/f2709b45b322444ea758c15a2ee71f97?sid=5a264125-247f-4463-9f01-d49ea3ef0d35)
 
 Contract Address on **Optimism Sepolia**: 0x4B7f283ea83E4bc7D569A110b037Cc69b006b25C
 
@@ -104,6 +104,7 @@ HARDHAT_NETWORK=your-network
 
 ### Deployed Contracts
 Contract Address on **Optimism Sepolia**:0x4B7f283ea83E4bc7D569A110b037Cc69b006b25C
+
 Contract Address on **Lisk**: 0x424FB655671A63C384317cC5ffEBd99F46564C38 
 
 ### Deployed Site
