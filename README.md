@@ -1,10 +1,14 @@
-# DrugLedger [dApp](https://drug-ledger.vercel.app)
+# DrugLedger [site](https://drug-ledger.vercel.app)
 
 This is a decentralized project built with Next.js, Hardhat, and The Graph to ensure transparency and security in the drug supply chain. It provides an explorer for verifying drugs, tracking events, and logging actions securely on the blockchain.
 
 Website: [https://drug-ledger.vercel.app](https://drug-ledger.vercel.app)
-Live Demo: [Video](www.loom.com/share/6615fd2733fd4fffaf0e1f98081d1438)
 
+Live Demo: [Video](https://www.loom.com/share/6615fd2733fd4fffaf0e1f98081d1438)
+
+Contract Address on **Optimism Sepolia**: 0x4B7f283ea83E4bc7D569A110b037Cc69b006b25C
+
+Contract Address on **Lisk**: 0x424FB655671A63C384317cC5ffEBd99F46564C38 
 ## Project Structure
 
 The project is divided into three main directories:
@@ -104,7 +108,8 @@ Contract Address on **Lisk**: 0x424FB655671A63C384317cC5ffEBd99F46564C38
 
 ### Deployed Site
 Website: [https://drug-ledger.vercel.app](https://drug-ledger.vercel.app)
-Live Demo: [Video](www.loom.com/share/6615fd2733fd4fffaf0e1f98081d1438)
+
+Live Demo: [Video](https://www.loom.com/share/6615fd2733fd4fffaf0e1f98081d1438)
 
 
 Learn More
