@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import ExplorerRow from './explorerRow'
 import ExplorerHeader from './explorerHeader'
 import { CiSearch } from 'react-icons/ci'
@@ -8,58 +8,104 @@ import {
    HydrationBoundary,
    QueryClient,
    useQuery
- } from '@tanstack/react-query'
- import { gql, request } from 'graphql-request'
- const query = gql`{
-   issueCloseds(first: 5) {
-     id
-     drugId
-     issueId
-     reason
-   }
-   issueOpeneds(first: 5) {
-     id
-     drugId
-     issueId
-     name
-   }`
-   
-const DrugExplorer = () => {
-   const query = ""
-   const queryClient = new QueryClient()
-   const url = 'https://api.studio.thegraph.com/query/87766/drugledger/version/latest'
-   const { data, status} = useQuery({
-      queryKey: ['data'],
-      async queryFn() {
-         return await request(url, query)
-   }})
-   console.log(data, status)
+} from '@tanstack/react-query'
+import { gql, request } from 'graphql-request'
+const query = gql`{
+  registeredDrugs {
+    drugId
+    transactionHash
+    blockTimestamp
+  }
+  logs {
+    drugId
+    action
+    from
+    transactionHash
+    blockTimestamp
+  }
+  issueOpeneds {
+    drugId
+    issueId
+    name
+    description
+    blockTimestamp
+  }
+  issueCloseds {
+    drugId
+    issueId
+    reason
+    transactionHash
+    blockTimestamp
+  }
+  manufacturerRevokeds {
+    name
+    license
+    transactionHash
+    blockTimestamp
+  }
+  registeredManufacturers {
+    name
+    transactionHash
+    blockTimestamp
+  }
+}`
 
-   // const get = async () => {
-   //    const result = await request("https://api.studio.thegraph.com/query/87766/drugledger/version/latest", query)
-   //    const data = await result.json()
-   //    console.log(data)
-   // }
-   // get()
+const DrugExplorer = () => {
+   const [data, setData] = useState<any>()
+   const get = useCallback(async () => {
+      const result = await request(process.env.NEXT_PUBLIC_GRAPH_URL as string, query)
+      setData(result)
+      console.log(result)
+   }, [])
+   useEffect(() => {
+      get()
+   })
    return (
-      <div className='lg:w-[70vw] md:w-[90vw] w-[95vw] bg-white shadow h-[30rem] relative top-[-10rem] p-2 items-center rounded-xl z-0'>
+      <div className='lg:w-[70vw] md:w-[90vw] w-[95vw] bg-[#0c2442] shadow h-[35rem] relative top-[-20rem] p-6 items-center rounded-xl z-0 mx-auto px-4 overflow-hidden pb-10'>
          <div className='w-full bg-red-00 h-[3rem] flex justify-between '>
-            <div className='w-full bg-yellow-00 flex border-2 border-solid border-gray-300 rounded-lg overflow-hidden'>
-               <input type="text" className='w-full bg-blue-00 h-full outline-none px-5' placeholder='Search Drug' />
-               <button className='text-3xl px-5 text-blue-500 hover:bg-blue-500 hover:text-white'><CiSearch />
+            <div className='w-full bg-transparent flex border-[2.5px] border-solid border-gray-300 hover:border-white rounded-lg overflow-hidden'>
+               <input type="text" className='w-full bg-blue-00 h-full outline-none px-5 bg-transparent text-white' placeholder='Search by Drug ID' />
+               <button className='text-3xl px-5 text-white '><CiSearch />
                </button>
             </div>
          </div>
 
-         <div className='bg-green-200 mt-2'>
-            <ExplorerHeader txn='Transaction (Txn)' type='Type' method='Method' from='from' details='Details'/>
-            <ExplorerRow txn='Nobl' type='dd' method='ddd' from='0x' details='Hello'/>
-            <ExplorerRow txn='Nobl' type='dd' method='ddd' from='0x' details='Hello'/>
-            <ExplorerRow txn='Nobl' type='dd' method='ddd' from='0x' details='Hello'/>
-            <ExplorerRow txn='Nobl' type='dd' method='ddd' from='0x' details='Hello'/>
-            <ExplorerRow txn='Nobl' type='dd' method='ddd' from='0x' details='Hello'/>
-            
+         <ExplorerHeader txn='Transaction (Txn)' type='Type' method='Method' from='from' details='Details' />
+         <div className='overflow-auto h-[calc(100%-8rem)] scroll-hidden'> 
+            {
+               data && data.registeredDrugs.map((drug: any, key: any) => (
+                  <ExplorerRow key={key} txn={drug.transactionHash} type={"Registered Drug"} method={"call"} from='' details={drug} />
+
+               ))
+            }
+            {
+               data && data.logs.map((drug: any, key: any) => (
+                  <ExplorerRow key={key} txn={drug.transactionHash} type={"Logs"} method={"call"} from='' details={drug} />
+               ))
+            }
+            {
+               data && data.issueOpeneds.map((drug: any, key: any) => (
+                  <ExplorerRow key={key} txn={drug.transactionHash} type={"Issue Opened"} method={"call"} from='' details={drug} />
+               ))
+            }
+            {
+               data && data.issueCloseds.map((drug: any, key: any) => (
+                  <ExplorerRow key={key} txn={drug.transactionHash} type={"Issue Closed"} method={"call"} from='' details={drug} />
+               ))
+            }
+            {
+               data && data.manufacturerRevokeds.map((drug: any, key: any) => (
+                  <ExplorerRow key={key} txn={drug.transactionHash} type={"Manufacturer Revoked"} method={"call"} from='' details={drug} />
+               ))
+            }
+            {
+               data && data.registeredManufacturers.map((drug: any, key: any) => (
+                  <ExplorerRow key={key} txn={drug.transactionHash} type={"Manufacturer Revoked"} method={"call"} from='' details={drug} />
+               ))
+            }
+
          </div>
+
 
       </div>
    )

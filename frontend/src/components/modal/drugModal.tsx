@@ -12,7 +12,19 @@ import { FcCollapse, FcExpand } from "react-icons/fc";
 import OpenIssue from '../openIssue'
 import AddLogs from '../addLogs'
 import VerifyBox from '../verify'
+import { gql, request } from 'graphql-request'
 
+const query = gql`{
+  logs {
+    id
+    drugId
+    entity
+    action
+    transactionHash
+    from
+  }
+}`
+const url = process.env.NEXT_PUBLIC_GRAPH_URL as string
 const DrugModal = ({ close, closeFn, drugId }: { close: boolean, closeFn: Function, drugId?: number }) => {
    const account = useAccount()
    const [loading, setLoading] = useState<boolean>(false)
@@ -58,24 +70,14 @@ const DrugModal = ({ close, closeFn, drugId }: { close: boolean, closeFn: Functi
             toast.error('No drug found with this ID')
             return
          }
-         const returnLogs = await contract.getPastEvents('Log', {
-            fromBlock: 0,
-            toBlock: 'latest'
-         }).then((result: any) => result).catch(() => undefined)
+         const logs = await request(url, query)
          const result = await fetch(`/api/files?cid=${drug.cid}`, {
             method: "GET"
          })
          const data = await result.json()
-         const newLog = []
-         if (typeof returnLogs !== undefined) {
-            for (let index = 0; index < returnLogs?.length; index++) {
-               const element = returnLogs[index];
-               newLog.push(element.returnValues)
-            }
-         }
          setDrugData({ ...data.data, manufacturer: drug.manufacturer })
          setIssues({ issues: drug.issues, drugId: _drugId as string })
-         setLogs(newLog as any)
+         setLogs((logs as any).logs)
          setCid(drug.cid)
          toast.success('Drug retrieved successfully')
          setLoading(false)

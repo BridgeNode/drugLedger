@@ -11,7 +11,7 @@ import { selectRandomDrugs } from '../../../sample'
 
 const Modal = ({ close, closeFn }: { close: boolean, closeFn: Function }) => {
    const account = useAccount()
-   const [url, setUrl] = useState<string>("hhh")
+   const [url, setUrl] = useState<string>()
    const [fields, setFields] = useState({
       drugName: "",
       genericName: "",

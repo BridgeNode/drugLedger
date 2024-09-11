@@ -70,7 +70,9 @@ export default function HomePage() {
                <button className="p-3 px-10 bg-[#ff7d00] shadow-lg text-black rounded-full m-2 flex justify-center items-center" onClick={handleSubmit} disabled={loading}>Register Here {loading && <Loader />}</button>
             </div>
          </div>
+         <div className="w-full h-[30rem]  bg-white relative">
          <DrugExplorer />
+         </div>
          <RegisterModal close={register} closeFn={setRegister} />
          <Modal close={registerDrug} closeFn={setRegisterDrug} />
       </main>
