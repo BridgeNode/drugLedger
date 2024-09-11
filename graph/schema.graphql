@@ -1,0 +1,48 @@
+type IssueClosed @entity(immutable: true) {
+  id: Bytes!
+  drugId: BigInt! # uint256
+  issueId: BigInt! # uint256
+  reason: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type IssueOpened @entity(immutable: true) {
+  id: Bytes!
+  drugId: BigInt! # uint256
+  issueId: BigInt! # uint256
+  name: String! # string
+  description: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Log @entity(immutable: true) {
+  id: Bytes!
+  drugId: BigInt! # uint256
+  entity: String! # string
+  action: String! # string
+  from: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ManufacturerRevoked @entity(immutable: true) {
+  id: Bytes!
+  name: String! # string
+  license: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RegisteredManufacturer @entity(immutable: true) {
+  id: Bytes!
+  name: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
