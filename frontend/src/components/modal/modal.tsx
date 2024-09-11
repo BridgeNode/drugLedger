@@ -38,7 +38,7 @@ const Modal = ({ close, closeFn }: { close: boolean, closeFn: Function }) => {
       }
       try {
          const id = await uploadFile();
-         setUrl(`${window.location.href}/drug/${id}`)
+         setUrl(`${window.location.href}drug/${await id}`)
          setloading(false)
       } catch (error) {
          console.log(error)
