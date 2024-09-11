@@ -49,7 +49,7 @@ const FinalizeModal = ({ url, setUrl }: { url: string | undefined, setUrl: Funct
    }, [generateQR])
    return (
       url !== undefined && (
-         <div className='w-full h-full fixed flex justify-center pt-[8vh] bg-white/30 backdrop-blur-[1px] z-[2]' onClick={(e) => e.currentTarget === e.target && setUrl(undefined)}>
+         <div className='w-full h-full fixed flex justify-center pt-[8vh] bg-white/30 backdrop-blur-[1px] z-[3]' onClick={(e) => e.currentTarget === e.target && setUrl(undefined)}>
             <div className='w-[85vw] md:w-[80vw] max-h-[90vh] lg:w-[40vw] xl:[w-50vw] h-fit bg-white rounded-md p-5 shadow-sm'>
                <div className='w-full py-1 bg-red-00 mb-2 flex justify-center items-center font-semibold text-[16px]'>
                   <p>Certify Your Drugs with our QR code</p>
