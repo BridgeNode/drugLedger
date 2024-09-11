@@ -34,9 +34,11 @@ const FinalizeModal = ({ url, setUrl }: { url: string | undefined, setUrl: Funct
    const generateQR = useCallback(async () => {
       setLoading(true)
       try {
-         const qr = await QRCode.toDataURL(url as string | "")
-         setImage(qr)
-         setLoading(false)
+         if (url) {
+            const qr = await QRCode.toDataURL(url)
+            setImage(qr)
+            setLoading(false)
+         }
       } catch (error) {
          setLoading(false)
          // toast.error('Error retrieving QR Code')

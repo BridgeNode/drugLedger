@@ -1,7 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "../../node_modules/normalize.css/normalize.css";
 
+@font-face {
+   font-family: "clash";
+   src: url(../../public/fonts/ClashDisplay.ttf);
+   font-weight: 400;
+   /* font-style: ; */
+}
+@font-face {
+   font-family: "cabinet";
+   src: url(../../public/fonts/CabinetGrotesk.ttf);
+   font-weight: 900;
+   /* font-style: ; */
+}
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -41,6 +54,11 @@ body {
 }
 
 .hero {
-   background: url("../../public/drug4.avif");
+   background: url("../../public/drug5.jpg");
    background-size: cover;
 }
+
+.sh {
+   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+ }
+ 

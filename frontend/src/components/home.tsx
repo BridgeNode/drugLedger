@@ -34,7 +34,6 @@ export default function HomePage() {
         return await request(url, query)
       }
     })
-    console.log(data)
    const getManufacturer = async () => {
       const result = await contract.methods.getManufacturer(account.address).call()
       return result;
@@ -44,7 +43,6 @@ export default function HomePage() {
       setLoading(true)
       try {
          const manu = await getManufacturer();
-         console.log(manu)
          if (manu.name !== "") {
             setRegisterDrug(false)
          } else {
@@ -60,17 +58,14 @@ export default function HomePage() {
    return (
       <main className="flex min-h-screen flex-col items-center">
          <Navbar />
-         {/* <button onClick={() => setClose(!close)}>Open</button>
-         <button onClick={() => getManufacturer()}>Get Manu</button> */}
-
-         <div className="w-full h-[92vh] bg-white flex justify-center items-center">
-            <div className="md:w-[80vw] w-full h-full bg-blue-300 flex flex-col items-center hero py-[30vh]">
-               <h3 className="text-[2.8rem] text-center font-bold leading-tight w-[80vw] max-sm:w-full text-green-700 font-serif ">Revolutionizing Healthcare with Blockchain</h3>
-               <h2 className="text-xl text-center my-4 w-[40rem]">Secure, transparent, and patient-centric healthcare data sharing. Empower your health with trustless, decentralized technology</h2>
-               <button className="p-3 px-10 bg-[#ff7d00] shadow-lg text-black rounded-full m-2 flex justify-center items-center" onClick={handleSubmit} disabled={loading}>Register Here {loading && <Loader />}</button>
+         <div className="w-full h-[92vh] bg-white flex justify-center items-center overflow-hidden">
+            <div className=" w-full h-full bg-blue-300 flex flex-col items-center hero pt-[20vh]">
+               <h3 className="text-[4.5rem] max-sm:text-[2.5rem] text-center font-bold leading-tight w-[60vw] max-sm:w-full  text-[#ffffff] font-[cabinet] sh">Revolutionizing Drug Verification and Tracking</h3>
+               <h2 className="text-xl text-center my-4 w-full md:w-[50vw] font-[clash]">Empowering Transparency and Trust in the Pharmaceutical Supply Chain with Blockchain Technology</h2>
+               <button className="p-3 px-10 bg-[#DDD92A] shadow-lg text-black rounded-full m-2 flex justify-center items-center" onClick={handleSubmit} disabled={loading}>Register Here {loading && <Loader />}</button>
             </div>
          </div>
-         <div className="w-full h-[30rem]  bg-white relative">
+         <div className="w-full h-[30rem]  bg-blue-300 relative">
          <DrugExplorer />
          </div>
          <RegisterModal close={register} closeFn={setRegister} />
